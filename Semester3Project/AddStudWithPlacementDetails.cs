@@ -17,41 +17,68 @@ namespace Semester3Project
         {
             InitializeComponent();
         }
+        private bool validatingField()
+        {
+            //StudentID
+            if (string.IsNullOrEmpty(textBox1.Text))
+            {
+                textBox1.Focus();
+                errorProvider1.SetError(textBox1, "Please Enter Student ID");
+                return false;
+            }
+            //company Name
+            if (string.IsNullOrEmpty(textBox2.Text))
+            {
 
+                textBox2.Focus();
+                errorProvider1.SetError(textBox2, "Please Enter company Name");
+                return false;
+            }
+            //package Name
+            if (string.IsNullOrEmpty(textBox3.Text))
+            {
+
+                textBox3.Focus();
+                errorProvider1.SetError(textBox3, "Please Enter Package Name");
+                return false;
+            }
+            return true;
+        }
         private void button1_Click(object sender, EventArgs e)
         {
-            SqlConnection conn = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\AISH GUPTA\Documents\placementdb.mdf;Integrated Security=True;Connect Timeout=30");
-            conn.Open();
-            //SqlDataAdapter da = new SqlDataAdapter("select * from NoPlacedStudents where StudentID="+ textBox1.Text, conn);
-            //DataTable dt = new DataTable();
-            //da.Fill(dt);
 
-            SqlCommand sc = new SqlCommand("insert into PlacedStudents(StudentID,FirstName,LastName,DOB,Email,Address,MotherName,FatherName,PhoneNumber,Percentage10th,Percentage12th,PercentageUG,PercentagePG) select StudentID,FirstName,LastName,DOB,Email,Address,MotherName,FatherName,PhoneNumber,Percentage10th,Percentage12th,PercentageUG,PercentagePG from NoPlacedStudents where StudentID=" + textBox1.Text, conn);
-            int obj=sc.ExecuteNonQuery();
-            SqlCommand sc2 = new SqlCommand("update PlacedStudents set CompanyName='" + textBox2.Text+ "', Package=" + textBox3.Text +" where StudentID="+textBox1.Text, conn);
-            sc2.ExecuteNonQuery();
-            SqlCommand sc3 = new SqlCommand("delete from NoPlacedStudents where StudentID=" + textBox1.Text, conn);
-            sc3.ExecuteNonQuery();
+            if (validatingField() == true)
+            {
 
+                SqlConnection conn = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\AISH GUPTA\Documents\placementdb.mdf;Integrated Security=True;Connect Timeout=30");
+                conn.Open();
 
+                SqlCommand cmd = new SqlCommand("select * from PlacedStudents where StudentID = " + textBox1.Text, conn);
+                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                DataSet ds1 = new DataSet();
+                da.Fill(ds1);
+                int i = ds1.Tables[0].Rows.Count;
+                if (i > 0)
+                {
+                    MessageBox.Show("Record Already Exists.");
+                }
+                else
+                {
+                    //SqlConnection conn = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\AISH GUPTA\Documents\placementdb.mdf;Integrated Security=True;Connect Timeout=30");
+                    //conn.Open();
 
-            //string Fname = "select FirstName from NoPlacedStudents where StudentID="+ textBox1.Text;
-            //SqlCommand sc1= new SqlCommand(,conn)
-            //string Lname = "select LastName from NoPlacedStudents where StudentID=" + textBox1.Text;
-            //String MomName = "select MotherName from NoPlacedStudents where StudentID=" + textBox1.Text;
-            //String DadName = "select FatherName from NoPlacedStudents where StudentID=" + textBox1.Text;
-            //String bday = "select DOB from NoPlacedStudents where StudentID=" + textBox1.Text;
-            //String addr = "select Address from NoPlacedStudents where StudentID=" + textBox1.Text;
-            //string phno = "select PhoneNumber from NoPlacedStudents where StudentID=" + textBox1.Text;
+                    SqlCommand sc = new SqlCommand("insert into PlacedStudents(StudentID,FirstName,LastName,DOB,Email,Address,MotherName,FatherName,PhoneNumber,Percentage10th,Percentage12th,PercentageUG,PercentagePG) select StudentID,FirstName,LastName,DOB,Email,Address,MotherName,FatherName,PhoneNumber,Percentage10th,Percentage12th,PercentageUG,PercentagePG from NoPlacedStudents where StudentID=" + textBox1.Text, conn);
+                    int obj = sc.ExecuteNonQuery();
+                    SqlCommand sc2 = new SqlCommand("update PlacedStudents set CompanyName='" + textBox2.Text + "', Package=" + textBox3.Text + " where StudentID=" + textBox1.Text, conn);
+                    sc2.ExecuteNonQuery();
+                    SqlCommand sc3 = new SqlCommand("delete from NoPlacedStudents where StudentID=" + textBox1.Text, conn);
+                    sc3.ExecuteNonQuery();
 
-
-
-            //SqlCommand sc1 = new SqlCommand("insert (StudentID, FirstName, LastName, DOB, Email, Address, MotherName, FatherName, PhoneNumber) into PlacedStudents select StudentID, FirstName, LastName, DOB, Email, Address, MotherName, FatherName, PhoneNumber from NoPlacedStudents where StudentID=" + textBox1.Text, conn);
-            //SqlCommand sc2 = new SqlCommand("insert (CompanyName, Package) into PlacedStudents values('" + textBox2.Text + "', "+ textBox3.Text + ") where StudentID="+ textBox1,conn);
-            //int obj1 = sc1.ExecuteNonQuery();
-            //int obj2 = sc2.ExecuteNonQuery();
-            MessageBox.Show(obj + ": Record has been inserted");
-            conn.Close();
+                    MessageBox.Show(obj + ": Record has been inserted");
+                    
+                }
+                conn.Close();
+            }
         }
 
         private void AddStudWithPlacementDetails_Load(object sender, EventArgs e)

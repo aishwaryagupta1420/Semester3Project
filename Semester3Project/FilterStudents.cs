@@ -16,6 +16,10 @@ namespace Semester3Project
         public FilterStudents()
         {
             InitializeComponent();
+            textBox1.MaxLength = 2;
+            textBox2.MaxLength = 2;
+            textBox3.MaxLength = 2;
+            textBox4.MaxLength = 2;
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -32,7 +36,42 @@ namespace Semester3Project
         {
 
         }
+        private bool validatingField()
+        {
+            //10th Percentage
+            if (string.IsNullOrEmpty(textBox1.Text))
+            {
+                textBox1.Focus();
+                errorProvider1.SetError(textBox1, "Please Enter 10th Percentage");
+                return false;
+            }
+            //12th Percentage
+            else if (string.IsNullOrEmpty(textBox2.Text))
+            {
 
+                textBox2.Focus();
+                errorProvider1.SetError(textBox2, "Please Enter 12th Percentage");
+                return false;
+            }
+            //UG percentage
+            else if (string.IsNullOrEmpty(textBox3.Text))
+            {
+
+                textBox3.Focus();
+                errorProvider1.SetError(textBox3, "Please Enter UG percentage");
+                return false;
+            }
+            //PG percentage
+            else if (string.IsNullOrEmpty(textBox4.Text))
+            {
+
+                textBox4.Focus();
+                errorProvider1.SetError(textBox4, "Please Enter PG percentage");
+                return false;
+            }
+            return true;
+        }
+        
         private void button1_Click(object sender, EventArgs e)
         {
             /*
@@ -40,12 +79,16 @@ namespace Semester3Project
             ViewFilteredStudents filStud = new ViewFilteredStudents();
             filStud.Show();
             */
-            SqlConnection conn = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\AISH GUPTA\Documents\placementdb.mdf;Integrated Security=True;Connect Timeout=30");
-            conn.Open();
-            SqlDataAdapter sda = new SqlDataAdapter("select * from NoPlacedStudents where Percentage10th>="+textBox1.Text+ "and Percentage12th>="+ textBox2.Text+ "and PercentageUG>="+ textBox3.Text+ "and PercentagePG>="+ textBox4.Text, conn);
-            DataTable da = new DataTable();
-            sda.Fill(da);
-            dataGridView1.DataSource = da;
+            if (validatingField() == true)
+            {
+                SqlConnection conn = new SqlConnection(@"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\AISH GUPTA\Documents\placementdb.mdf;Integrated Security=True;Connect Timeout=30");
+                conn.Open();
+                SqlDataAdapter sda = new SqlDataAdapter("select * from NoPlacedStudents where Percentage10th>=" + textBox1.Text + "and Percentage12th>=" + textBox2.Text + "and PercentageUG>=" + textBox3.Text + "and PercentagePG>=" + textBox4.Text, conn);
+                DataTable da = new DataTable();
+                sda.Fill(da);
+                dataGridView1.DataSource = da;
+                conn.Close();
+            }
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
